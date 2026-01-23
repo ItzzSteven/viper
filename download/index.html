@@ -1,1 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dev Downloads</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      font-family: Arial, sans-serif;
+    }
+
+    /* Top-left logo */
+    .logo-link {
+      position: fixed;
+      top: 16px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .logo-link img {
+      height: 32px;  
+      width: auto;
+      display: block;
+    }
+
+
+    .downloads-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    .downloads {
+      width: 380px;
+      background: #1c1c1c;
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    .downloads h2 {
+      margin: 0 0 12px;
+      color: #fff;
+      font-size: 18px;
+    }
+
+    .file {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      transition: background 0.15s ease;
+    }
+
+    .file:not(:last-child) {
+      margin-bottom: 6px;
+    }
+
+    .file:hover {
+      background: #262626;
+    }
+
+
+    .file-icon {
+      width: 24px;
+      height: 24px;
+      background: #2a2a2a;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #7aa2ff;
+      flex-shrink: 0;
+    }
+
+    .file-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .file-name {
+      font-size: 14px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .file-size {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 2px;
+    }
+
+
+    .download-btn {
+      padding: 7px 12px;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background 0.15s ease, border 0.15s ease;
+    }
+
+    .download-btn:hover {
+      background: #343434;
+      border-color: #4a4a4a;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="https://your-site-or-github-link.com" class="logo-link">
+    <img src="logo.png" alt="Logo">
+  </a>
+
+
+  <div class="downloads-wrapper">
+    <div class="downloads">
+      <h2>Downloads</h2>
+
+      <h3>ViperScript IDE</h3>
+
+
+      <div class="file">
+        <div class="file-icon">ZIP</div>
+        <div class="file-info">
+          <div class="file-name">viper.zip</div>
+          <div class="file-size">4.8 MB</div>
+        </div>
+        <a href="https://v1p3r.pages.dev/download/downloads/viper.zip" class="download-btn" download>
+          Download
+        </a>
+      </div>
+
+      <div class="file">
+        <div class="file-icon">EXE</div>
+        <div class="file-info">
+          <div class="file-name">installer.exe</div>
+          <div class="file-size">12.1 MB</div>
+        </div>
+        <a href="https://your-link/dev-symbols.zip" class="download-btn" download>
+          Download
+        </a>
+      </div>
+      <h3>Viper  Runtime</h3>
+      <h4>not released these are the viperscript files</h4>
+
+      <div class="file">
+        <div class="file-icon">ZIP</div>
+        <div class="file-info">
+          <div class="file-name">viper.zip</div>
+          <div class="file-size">4.8 MB</div>
+        </div>
+        <a href="https://v1p3r.pages.dev/download/downloads/viper.zip" class="download-btn" download>
+          Download
+        </a>
+      </div>
+
+      <div class="file">
+        <div class="file-icon">EXE</div>
+        <div class="file-info">
+          <div class="file-name">installer.exe</div>
+          <div class="file-size">12.1 MB</div>
+        </div>
+        <a href="https://your-link/dev-symbols.zip" class="download-btn" download>
+          Download
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>
 
