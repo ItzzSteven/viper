@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viper Forum</title>
-    <script>if (!localStorage.getItem('vUser')) window.location.href = "/login";</script>
+    <script>if (!localStorage.getItem('vUser')) window.location.href = "login.html";</script>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #0f172a; color: white; margin: 0; padding: 20px; }
+        body { font-family: sans-serif; background: #0f172a; color: white; margin: 0; padding: 20px; }
         .container { max-width: 750px; margin: 0 auto; }
-        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .pfp { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #38bdf8; }
+        .nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #334155; padding-bottom: 10px; }
+        .pfp { width: 35px; height: 35px; border-radius: 50%; border: 1px solid #38bdf8; object-fit: cover; }
         .composer { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 30px; }
         input, textarea { width: 100%; background: #0f172a; border: 1px solid #334155; color: white; padding: 10px; border-radius: 8px; box-sizing: border-box; margin-bottom: 10px; }
         .post-card { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; margin-bottom: 20px; }
@@ -21,19 +21,17 @@
 <body>
 <div class="container">
     <div class="nav">
-        <h2>Viper</h2>
+        <h2>Viper Forum</h2>
         <div style="display:flex; align-items:center; gap:10px;">
             <img src="" id="myPfp" class="pfp"> <b id="myName"></b>
-            <button onclick="localStorage.clear(); location.reload();" style="background:#f87171;">Logout</button>
+            <button onclick="localStorage.clear(); location.href='login.html';" style="background:#f87171;">Logout</button>
         </div>
     </div>
-
     <div class="composer">
         <input type="text" id="qTitle" placeholder="Question Title">
         <textarea id="qContent" placeholder="Describe your problem..."></textarea>
         <button onclick="sendPost()">Ask Question</button>
     </div>
-
     <div id="feed"></div>
 </div>
 
@@ -46,25 +44,27 @@
     document.getElementById('myPfp').src = pfp;
 
     async function load() {
-        const res = await fetch(`${BACKEND}/forum/posts`);
-        const data = await res.json();
-        render(data.posts);
+        const feed = document.getElementById('feed');
+        feed.innerHTML = "<p style='text-align:center; color:#fbbf24;'>Waking up server and loading posts...</p>";
+        try {
+            const res = await fetch(`${BACKEND}/forum/posts`);
+            const data = await res.json();
+            render(data.posts || []);
+        } catch (err) {
+            feed.innerHTML = "<p style='text-align:center; color:#f87171;'>Database is still starting. Refresh in 10 seconds.</p>";
+        }
     }
 
     function render(posts) {
+        const feed = document.getElementById('feed');
+        if (posts.length === 0) { feed.innerHTML = "<p>No posts yet.</p>"; return; }
         feed.innerHTML = posts.map(p => `
             <div class="post-card">
                 <div class="post-title">${p.title}</div>
-                <div class="meta"><img src="${p.pfp}" class="pfp"> Asked by @${p.username} on ${new Date(p.created_at).toLocaleDateString()}</div>
+                <div class="meta"><img src="${p.pfp}" class="pfp" style="width:20px;height:20px;"> By @${p.username}</div>
                 <div style="margin-bottom:20px;">${p.content}</div>
-                
-                <div style="font-size:0.8rem; color:#38bdf8; font-weight:bold;">ANSWERS</div>
-                ${p.replies.map(r => `
-                    <div class="answer">
-                        <div class="meta" style="margin:0 0 5px 0;"><img src="${r.pfp}" style="width:20px;height:20px;border-radius:50%;"> @${r.username}</div>
-                        ${r.message}
-                    </div>
-                `).join('')}
+                <div style="font-size:0.8rem; color:#38bdf8;">ANSWERS</div>
+                ${p.replies.map(r => `<div class="answer"><img src="${r.pfp}" style="width:18px;height:18px;border-radius:50%;"> @${r.username}: ${r.message}</div>`).join('')}
                 <div style="margin-top:15px; display:flex; gap:10px;">
                     <input id="in-${p.id}" placeholder="Type an answer..." style="margin:0;">
                     <button onclick="sendReply('${p.id}')">Reply</button>
@@ -91,7 +91,6 @@
         });
         load();
     }
-
     load();
 </script>
 </body>
