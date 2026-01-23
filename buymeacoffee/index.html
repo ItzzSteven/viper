@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Viper Database | 2026</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.6;
+            margin: 0;
+            background-color: #0d0d0d;
+            color: #00ff41; /* Classic Terminal Green */
+        }
+
+        header {
+            padding: 3rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid #00ff41;
+            position: relative;
+        }
+
+        /* Top Left Logo Image */
+        .top-left-logo {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .top-left-logo img {
+            width: 50px;
+            height: auto;
+            display: block;
+        }
+
+        /* Top Right Buy Me a Coffee Button */
+        .top-right-coffee {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .top-right-coffee img {
+            height: 40px; /* Standard button height */
+            width: auto;
+            display: block;
+            border-radius: 5px;
+        }
+
+        .top-left-logo:hover, .top-right-coffee:hover {
+            transform: scale(1.05);
+        }
+
+        .container {
+            display: flex;
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        main {
+            flex: 1;
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(0, 255, 65, 0.2);
+        }
+
+        article {
+            border-bottom: 1px solid #333;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h2 { color: #ffffff; margin-top: 0; }
+        
+        .date {
+            color: #008f11;
+            font-size: 0.85rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            header { padding-top: 7rem; } /* Extra space for two buttons on mobile */
+            .top-left-logo, .top-right-coffee { top: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <!-- Top Left Logo -->
+        <a href="https://v1p3r.pages.dev" class="top-left-logo">
+            <img src="logo.png" alt="V1P3R Logo">
+        </a>
+
+        <!-- Top Right Buy Me a Coffee - Replace URL with your actual BMC link -->
+        <a href="https://www.buymeacoffee.com" target="_blank" class="top-right-coffee">
+            <img src="https://cdn.buymeacoffee.com" alt="Buy Me A Coffee">
+        </a>
+        
+        <h1>Viper Database</h1>
+    </header>
+
+    <div class="container">
+        <main>
+            <article>
+                <h2>Database</h2>
+                <span class="date">TIMESTAMP: 2026-01-23 08:30</span>
+                <p>viper's login and forum uses a render database and can be slow and go to sleep sometime and has a limit of 1gb.</p>
+            </article>
+
+            <article>
+                <h2>What can i do to help</h2>
+                <span class="date">TIMESTAMP: 2026-01-22 14:15</span>
+                <p>you can buy me a coffe so i can pay for the render subscription.</p>
+            </article>
+        </main>
+    </div>
+
+</body>
+</html>
