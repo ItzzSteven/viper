@@ -1,27 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Viper | Login</title>
     <style>
         body { font-family: sans-serif; background: #0f172a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
         .card { background: #1e293b; padding: 2rem; border-radius: 1rem; width: 320px; border: 1px solid #334155; }
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; box-sizing: border-box; }
         button { width: 100%; padding: 12px; background: #38bdf8; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        #toggleBtn { color: #38bdf8; cursor: pointer; text-decoration: underline; font-size: 0.8rem; }
-        #status { margin-top: 15px; font-size: 0.85rem; text-align: center; color: #fbbf24; }
+        button:disabled { background: #334155; cursor: wait; }
+        #status { margin-top: 15px; font-size: 0.8rem; text-align: center; color: #38bdf8; min-height: 1.2rem; }
+        .error { color: #f87171 !important; }
     </style>
 </head>
 <body>
 <div class="card">
     <h2 id="title">Login</h2>
     <form id="authForm">
-        <input type="text" id="username" placeholder="Choose Username" style="display:none;">
+        <input type="text" id="regUser" placeholder="Choose Username" style="display:none;">
         <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button type="submit" id="btn">Login</button>
+        <input type="password" id="pass" placeholder="Password" required>
+        <button type="submit" id="authBtn">Login</button>
     </form>
-    <p style="margin-top:15px; text-align:center;"><span id="toggleBtn" onclick="toggle()">Need an account? Register</span></p>
+    <p style="text-align:center;"><span id="toggleBtn" onclick="toggleAuth()" style="color:#38bdf8; cursor:pointer; font-size:0.8rem;">Need an account? Register</span></p>
     <div id="status"></div>
 </div>
 
@@ -29,39 +31,90 @@
     const BACKEND = "https://database-z8fs.onrender.com";
     let isLogin = true;
 
-    function toggle() {
+    function toggleAuth() {
         isLogin = !isLogin;
         document.getElementById('title').innerText = isLogin ? "Login" : "Register";
-        document.getElementById('username').style.display = isLogin ? "none" : "block";
-        document.getElementById('username').required = !isLogin;
-        document.getElementById('btn').innerText = isLogin ? "Login" : "Create Account";
-        document.getElementById('status').innerText = "";
+        document.getElementById('regUser').style.display = isLogin ? "none" : "block";
+        document.getElementById('authBtn').innerText = isLogin ? "Login" : "Create Account";
+    }
+
+    // Function to ping the server until it responds (Waking up Render)
+    async function wakeServer() {
+        const status = document.getElementById('status');
+        let attempts = 0;
+        
+        while (attempts < 10) {
+            try {
+                // Try a lightweight GET request to see if server is alive
+                const res = await fetch(`${BACKEND}/forum/posts`, { method: 'GET' });
+                if (res.ok) return true;
+            } catch (e) {
+                attempts++;
+                status.innerText = `Waking up database... attempt ${attempts}/10`;
+                await new Promise(r => setTimeout(r, 3000)); // Wait 3 seconds between retries
+            }
+        }
+        return false;
     }
 
     document.getElementById('authForm').onsubmit = async (e) => {
         e.preventDefault();
         const status = document.getElementById('status');
-        status.innerText = "Waking up server... please wait (up to 1 min)";
+        const btn = document.getElementById('authBtn');
+        const emailVal = document.getElementById('email').value;
+        const passVal = document.getElementById('pass').value;
+        const userVal = document.getElementById('regUser').value;
+
+        // Validation for Registration
+        if (!isLogin) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const passRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+            if (!emailRegex.test(emailVal)) { status.innerText = "Invalid email format"; return; }
+            if (!passRegex.test(passVal)) { status.innerText = "Password too weak (Need A, a, 1, !)"; return; }
+        }
+
+        btn.disabled = true;
+        status.classList.remove('error');
+        status.innerText = "Connecting to Viper Database...";
+
+        // WAIT for the server to wake up before sending the actual login/register request
+        const isAwake = await wakeServer();
         
+        if (!isAwake) {
+            status.innerText = "Server is taking too long to wake up. Try again.";
+            status.classList.add('error');
+            btn.disabled = false;
+            return;
+        }
+
         try {
+            status.innerText = isLogin ? "Authenticating..." : "Creating Account...";
             const res = await fetch(`${BACKEND}${isLogin ? '/login' : '/register'}`, {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ 
-                    email: email.value, password: password.value, 
-                    username: isLogin ? undefined : username.value 
-                })
+                body: JSON.stringify({ email: emailVal, password: passVal, username: userVal })
             });
+
             const data = await res.json();
             if (data.success) {
                 if (isLogin) {
                     localStorage.setItem('vUser', data.username);
-                    localStorage.setItem('vPfp', data.pfp || "https://ui-avatars.com" + data.username);
-                    window.location.href = "forum.html";
-                } else { alert("Registered! Now Login."); toggle(); }
-            } else { status.innerText = data.error; status.style.color = "#f87171"; }
+                    localStorage.setItem('vPfp', data.pfp);
+                    status.innerText = "Success! Redirecting...";
+                    window.location.href = "forum.html"; 
+                } else {
+                    alert("Registered! Now Login.");
+                    toggleAuth();
+                }
+            } else {
+                status.innerText = data.error;
+                status.classList.add('error');
+            }
         } catch (err) {
-            status.innerText = "Server is still starting... try again in 5 seconds.";
+            status.innerText = "Connection lost. Please try again.";
+            status.classList.add('error');
+        } finally {
+            btn.disabled = false;
         }
     };
 </script>
